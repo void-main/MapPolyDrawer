@@ -19,13 +19,20 @@ public class VirtualOverlayBuilder {
             MapPolygon polygon = polygons.get(idx);
 
             if (idx == currentPolyIndex) {
-                for (int latLngIdx = 0; latLngIdx < polygon.allPoints().size(); latLngIdx++) {
+                int pointCount = polygon.allPoints().size();
+
+                // Remove duplicate point
+                if (polygon.isClosePolygon()) pointCount --;
+
+                for (int latLngIdx = 0; latLngIdx < pointCount; latLngIdx++) {
                     container.addVirtualOverlay(
                             new VirtualOverlayMarker(polygon.allPoints().get(latLngIdx),
                                     latLngIdx % 2 == 0 ? IDrawableMap.MarkerType.UserPoint : IDrawableMap.MarkerType.ControlPoint));
                 }
 
-                container.addVirtualOverlay(new VirtualOverlayPolyline(polygon));
+                if (pointCount >= 2) {
+                    container.addVirtualOverlay(new VirtualOverlayPolyline(polygon));
+                }
             } else {
                 VirtualOverlayPolygon virtualPolygon = new VirtualOverlayPolygon(polygon);
                 container.addVirtualOverlay(virtualPolygon);

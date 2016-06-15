@@ -105,7 +105,7 @@ public class Drawer<PointClass, MarkerClass, PolylineClass, PolygonClass> {
 
     public void onDragMarkerMove(MarkerClass marker, PointClass toPosition) {
         VirtualOverlayMarker overlay = mRenderer.getVirtualOverlayForMaker(marker);
-        if (overlay != null && overlay.getMarkerType() == IDrawableMap.MarkerType.UserPoint) {
+        if (overlay != null) {
             MapPolygon currentPolygon = mStore.getState().getPolygons().get(
                     mStore.getState().getCurrentPolyIndex());
             int userPointIndex = currentPolygon.allPoints().indexOf(overlay.getPoint()) / 2;

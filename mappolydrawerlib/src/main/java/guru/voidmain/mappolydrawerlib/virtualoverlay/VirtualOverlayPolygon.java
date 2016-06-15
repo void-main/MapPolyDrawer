@@ -29,4 +29,18 @@ public class VirtualOverlayPolygon extends BaseVirtualOverlay {
 
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
+    public boolean isContentEquals(BaseVirtualOverlay overlay) {
+        if (overlay instanceof VirtualOverlayPolygon) {
+            VirtualOverlayPolygon polygonOverlay = (VirtualOverlayPolygon) overlay;
+            return polygonOverlay.getMapPolygon().isContentEquals(getMapPolygon());
+        }
+        return false;
+    }
 }

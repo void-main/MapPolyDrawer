@@ -41,4 +41,19 @@ public class VirtualOverlayMarker extends BaseVirtualOverlay {
 
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
+    public boolean isContentEquals(BaseVirtualOverlay overlay) {
+        if (overlay instanceof VirtualOverlayMarker) {
+            VirtualOverlayMarker markerOverlay = (VirtualOverlayMarker) overlay;
+
+            return markerOverlay.getPoint().isPointCloseEnough(getPoint());
+        }
+        return false;
+    }
 }

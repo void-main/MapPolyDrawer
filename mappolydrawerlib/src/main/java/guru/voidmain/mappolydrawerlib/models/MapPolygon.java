@@ -184,7 +184,10 @@ public class MapPolygon implements Cloneable {
      * @param point
      */
     public void moveUserPoint(int index, LatLngWrapper point) {
-        mUserPoints.set(index % mUserPoints.size(), point);
+        LatLngWrapper oldPoint = mUserPoints.get(index % mUserPoints.size());
+        oldPoint.latitude = point.latitude;
+        oldPoint.longitude = point.longitude;
+        mUserPoints.set(index % mUserPoints.size(), oldPoint);
         refreshControlPoints();
     }
 
@@ -260,4 +263,22 @@ public class MapPolygon implements Cloneable {
         }
     }
 
+    public boolean isContentEquals(MapPolygon other) {
+        if (isClosePolygon() == other.isClosePolygon() &&
+                polygonPoints().size() == other.polygonPoints().size()) {
+            for (int idx = 0; idx < polygonPoints().size(); idx++) {
+                if (!polygonPoints().get(idx).isPointCloseEnough(other.polygonPoints().get(idx))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 }

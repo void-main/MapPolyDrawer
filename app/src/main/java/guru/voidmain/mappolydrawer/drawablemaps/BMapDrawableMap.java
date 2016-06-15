@@ -8,6 +8,7 @@ import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Polygon;
+import com.baidu.mapapi.map.PolygonOptions;
 import com.baidu.mapapi.map.Polyline;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
@@ -65,7 +66,9 @@ public class BMapDrawableMap implements IDrawableMap<LatLng, Marker, Polyline, P
 
     @Override
     public Polygon addPolygonWithPoints(List<LatLng> points) {
-        return null;
+        PolygonOptions option = new PolygonOptions().points(points).zIndex(999);
+        Polygon polygon = (Polygon) mBaiduMap.addOverlay(option);
+        return polygon;
     }
 
     @Override
@@ -81,6 +84,21 @@ public class BMapDrawableMap implements IDrawableMap<LatLng, Marker, Polyline, P
     @Override
     public void removePolygon(Polygon polygon) {
         polygon.remove();
+    }
+
+    @Override
+    public void updateMarkerToPosition(Marker marker, LatLng point) {
+        marker.setPosition(point);
+    }
+
+    @Override
+    public void updatePolylinePoints(Polyline polyline, List<LatLng> points) {
+        polyline.setPoints(points);
+    }
+
+    @Override
+    public void updatePolygonPoints(Polygon polygon, List<LatLng> points) {
+        polygon.setPoints(points);
     }
 
 }

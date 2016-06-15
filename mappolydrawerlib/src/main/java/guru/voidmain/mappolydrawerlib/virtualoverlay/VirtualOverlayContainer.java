@@ -28,4 +28,23 @@ public class VirtualOverlayContainer extends BaseVirtualOverlay {
     public void addVirtualOverlay(BaseVirtualOverlay virtualOverlay) {
         mVirtualOverlays.add(virtualOverlay);
     }
+
+    @Override
+    public boolean isContentEquals(BaseVirtualOverlay overlay) {
+        if (overlay instanceof VirtualOverlayContainer) {
+            VirtualOverlayContainer container = (VirtualOverlayContainer) overlay;
+
+            List<BaseVirtualOverlay> thisOverlays = getVirtualOverlays();
+            List<BaseVirtualOverlay> otherOverlays = container.getVirtualOverlays();
+            for (int idx = 0; idx < thisOverlays.size(); idx ++) {
+                if (!thisOverlays.get(idx).isContentEquals(otherOverlays.get(idx))) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 }

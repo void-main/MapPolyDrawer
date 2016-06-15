@@ -34,4 +34,8 @@ public class LatLngWrapper {
         }
         return false;
     }
+
+    public boolean isPointCloseEnough(LatLngWrapper other) {
+        return Math.abs(latitude - other.latitude) < Constants.EPSILON && Math.abs(longitude - other.longitude) < Constants.EPSILON;
+    }
 }

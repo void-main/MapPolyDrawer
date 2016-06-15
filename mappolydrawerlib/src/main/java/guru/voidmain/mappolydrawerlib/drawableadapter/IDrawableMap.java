@@ -29,4 +29,8 @@ public interface IDrawableMap<PointClass, MarkerClass, PolylineClass, PolygonCla
     void removeMarker(MarkerClass marker);
     void removePolyline(PolylineClass polyline);
     void removePolygon(PolygonClass polygon);
+
+    void updateMarkerToPosition(MarkerClass marker, PointClass point);
+    void updatePolylinePoints(PolylineClass polyline, List<PointClass> points);
+    void updatePolygonPoints(PolygonClass polygon, List<PointClass> points);
 }

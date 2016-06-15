@@ -44,8 +44,8 @@ public class ActionReducerUnitTest {
         store.dispatch(new MovePoint(0, new LatLngWrapper(0, 0)));
         state = store.getState();
         assertEquals("first point should be 0,0",
-                new LatLngWrapper(0, 0),
-                state.getPolygons().get(state.getCurrentPolyIndex()).polygonPoints().get(0));
+                true,
+                state.getPolygons().get(state.getCurrentPolyIndex()).polygonPoints().get(0).isPointCloseEnough(new LatLngWrapper(0, 0)));
 
         store.dispatch(new ClosePolygon());
         state = store.getState();
@@ -56,8 +56,8 @@ public class ActionReducerUnitTest {
         store.dispatch(new MovePoint(0, new LatLngWrapper(1, 1)));
         state = store.getState();
         assertEquals("first point should be 1,1",
-                new LatLngWrapper(1, 1),
-                state.getPolygons().get(state.getCurrentPolyIndex()).polygonPoints().get(0));
+                true,
+                state.getPolygons().get(state.getCurrentPolyIndex()).polygonPoints().get(0).isPointCloseEnough(new LatLngWrapper(1, 1)));
 
         store.dispatch(new ConfirmPoint(0));
         state = store.getState();
@@ -93,10 +93,10 @@ public class ActionReducerUnitTest {
         assertEquals("should have 1 polygon", 1, state.getPolygons().size());
         assertEquals("should select first polygon", 0, state.getCurrentPolyIndex());
 
-        store.dispatch(new DeletePolygon(0));
+        store.dispatch(new SelectPolygon(-1));
         state = store.getState();
-        assertEquals("should have 0 polygon", 0, state.getPolygons().size());
         assertEquals("should select -1", -1, state.getCurrentPolyIndex());
+        assertEquals("should have 1 polygon", 1, state.getPolygons().size());
     }
 
 }

@@ -53,25 +53,17 @@ public class MapRenderer<PointClass, MarkerClass, PolylineClass, PolygonClass> {
             mMarkerMap.put(markerOverlay, marker);
         } else if (overlay instanceof VirtualOverlayPolyline) {
             VirtualOverlayPolyline polylineOverlay = (VirtualOverlayPolyline) overlay;
-            List<PointClass> convertedPoints = new ArrayList<>();
-            for (LatLngWrapper wrapperPoint: polylineOverlay.getMapPolygon().polygonPoints()) {
-                convertedPoints.add(mDrawableMap.convertLatLngWrapperToPointClass(wrapperPoint));
-            }
+            List<PointClass> convertedPoints = convertLatLngWrappersToPoints(polylineOverlay.getMapPolygon().polygonPoints());
 
             if (polylineOverlay.getMapPolygon().isClosePolygon()) {
                 convertedPoints.add(convertedPoints.get(0)); // 如果多边形闭合，则加上第0个
             }
 
-            if (convertedPoints.size() >= 2) {
-                PolylineClass polyline = mDrawableMap.addPolylineWithPoints(convertedPoints);
-                mPolylineMap.put(polylineOverlay, polyline);
-            }
+            PolylineClass polyline = mDrawableMap.addPolylineWithPoints(convertedPoints);
+            mPolylineMap.put(polylineOverlay, polyline);
         } else if (overlay instanceof VirtualOverlayPolygon) {
             VirtualOverlayPolygon polygonOverlay = (VirtualOverlayPolygon) overlay;
-            List<PointClass> convertedPoints = new ArrayList<>();
-            for (LatLngWrapper wrapperPoint: polygonOverlay.getMapPolygon().polygonPoints()) {
-                convertedPoints.add(mDrawableMap.convertLatLngWrapperToPointClass(wrapperPoint));
-            }
+            List<PointClass> convertedPoints = convertLatLngWrappersToPoints(polygonOverlay.getMapPolygon().polygonPoints());
             PolygonClass polygon = mDrawableMap.addPolygonWithPoints(convertedPoints);
             mPolygonMap.put(polygonOverlay, polygon);
         }
@@ -97,22 +89,35 @@ public class MapRenderer<PointClass, MarkerClass, PolylineClass, PolygonClass> {
     }
 
     public void updateOverlayForVirtualOverlay(BaseVirtualOverlay overlay) {
-//        if (overlay instanceof VirtualOverlayMarker) {
-//            VirtualOverlayMarker markerOverlay = (VirtualOverlayMarker) overlay;
-//            if (mMarkerMap.containsKey(markerOverlay)) {
-//                mDrawableMap.removeMarker(mMarkerMap.get(markerOverlay));
-//            }
-//        } else if (overlay instanceof VirtualOverlayPolyline) {
-//            VirtualOverlayPolyline polylineOverlay = (VirtualOverlayPolyline) overlay;
-//            if (mPolylineMap.containsKey(polylineOverlay)) {
-//                mDrawableMap.removePolyline(mPolylineMap.get(polylineOverlay));
-//            }
-//        } else if (overlay instanceof VirtualOverlayPolygon) {
-//            VirtualOverlayPolygon polygonOverlay = (VirtualOverlayPolygon) overlay;
-//            if (mPolygonMap.containsKey(polygonOverlay)) {
-//                mDrawableMap.removePolygon(mPolygonMap.get(polygonOverlay));
-//            }
-//        }
+        if (overlay instanceof VirtualOverlayMarker) {
+            VirtualOverlayMarker markerOverlay = (VirtualOverlayMarker) overlay;
+            if (mMarkerMap.containsKey(markerOverlay)) {
+                MarkerClass marker = mMarkerMap.get(markerOverlay);
+                mDrawableMap.updateMarkerToPosition(marker,
+                        mDrawableMap.convertLatLngWrapperToPointClass(markerOverlay.getPoint()));
+            }
+        } else if (overlay instanceof VirtualOverlayPolyline) {
+            VirtualOverlayPolyline polylineOverlay = (VirtualOverlayPolyline) overlay;
+            if (mPolylineMap.containsKey(polylineOverlay)) {
+                PolylineClass polyline = mPolylineMap.get(polylineOverlay);
+
+                List<PointClass> convertedPoints = convertLatLngWrappersToPoints(
+                        polylineOverlay.getMapPolygon().polygonPoints());
+
+                if (polylineOverlay.getMapPolygon().isClosePolygon()) {
+                    convertedPoints.add(convertedPoints.get(0)); // 如果多边形闭合，则加上第0个
+                }
+
+                mDrawableMap.updatePolylinePoints(polyline, convertedPoints);
+            }
+        } else if (overlay instanceof VirtualOverlayPolygon) {
+            VirtualOverlayPolygon polygonOverlay = (VirtualOverlayPolygon) overlay;
+            if (mPolygonMap.containsKey(polygonOverlay)) {
+                PolygonClass polygon = mPolygonMap.get(overlay);
+                List<PointClass> convertedPoints = convertLatLngWrappersToPoints(polygonOverlay.getMapPolygon().polygonPoints());
+                mDrawableMap.updatePolygonPoints(polygon, convertedPoints);
+            }
+        }
     }
 
     public VirtualOverlayMarker getVirtualOverlayForMaker(MarkerClass marker) {
@@ -123,6 +128,16 @@ public class MapRenderer<PointClass, MarkerClass, PolylineClass, PolygonClass> {
         }
 
         return null;
+    }
+
+    // TODO find a better place for this
+    protected List<PointClass> convertLatLngWrappersToPoints(List<LatLngWrapper> wrappers) {
+        List<PointClass> points = new ArrayList<>();
+        for (LatLngWrapper wrapper :
+                wrappers) {
+            points.add(mDrawableMap.convertLatLngWrapperToPointClass(wrapper));
+        }
+        return points;
     }
 
 }
