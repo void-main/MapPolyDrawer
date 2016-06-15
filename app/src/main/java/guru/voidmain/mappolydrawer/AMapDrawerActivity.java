@@ -6,24 +6,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.baidu.mapapi.SDKInitializer;
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.MapPoi;
-import com.baidu.mapapi.map.MapStatusUpdate;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.Marker;
-import com.baidu.mapapi.model.LatLng;
+import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.CameraUpdateFactory;
+import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.Marker;
 
-import guru.voidmain.mappolydrawer.drawablemaps.BMapDrawableMap;
+import guru.voidmain.mappolydrawer.drawablemaps.AMapDrawableMap;
 import guru.voidmain.mappolydrawer.utils.Utils;
 import guru.voidmain.mappolydrawerlib.drawer.Drawer;
 import guru.voidmain.mappolydrawerlib.stores.ApplicationState;
 
-public class BaiduMapDrawerActivity extends AppCompatActivity {
-    private static final String TAG = BaiduMapDrawerActivity.class.getCanonicalName();
+public class AMapDrawerActivity extends AppCompatActivity {
     MapView mMapView = null;
-    BaiduMap mBaiduMap = null;
+    AMap mAMap = null;
 
     Button mCloseButton = null;
     Button mClearButton = null;
@@ -37,10 +33,11 @@ public class BaiduMapDrawerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SDKInitializer.initialize(getApplicationContext());
+        setContentView(R.layout.activity_amap_drawer);
 
-        setContentView(R.layout.activity_baidu_map_drawer);
-        mMapView = (MapView) findViewById(R.id.bmapView);
+        mMapView = (MapView) findViewById(R.id.map);
+        mMapView.onCreate(savedInstanceState);
+        mAMap = mMapView.getMap();
 
         mCloseButton = (Button) findViewById(R.id.btn_close);
         mClearButton = (Button) findViewById(R.id.btn_clear);
@@ -49,37 +46,27 @@ public class BaiduMapDrawerActivity extends AppCompatActivity {
         mRedoButton = (Button) findViewById(R.id.btn_redo);
         mExportButton = (Button) findViewById(R.id.btn_export);
 
-        mDrawer = new Drawer(new BMapDrawableMap(mMapView));
+        mDrawer = new Drawer(new AMapDrawableMap(mMapView));
         mDrawer.setOnStateChangedListener(new Drawer.OnStateChangedListener() {
             @Override
             public void onStateChanged(ApplicationState state) {
-                // TODO update UI here
+                // TODO update UI
             }
         });
 
-        mBaiduMap = mMapView.getMap();
+        mAMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
-        MapStatusUpdate mapUpdate = MapStatusUpdateFactory.newLatLngZoom(new LatLng(39.914492, 116.403694), 15);
-        mBaiduMap.animateMapStatus(mapUpdate);
-
-
-        mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
+        mAMap.setOnMapClickListener(new AMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
                 mDrawer.onMapClicked(latLng);
             }
-
-            @Override
-            public boolean onMapPoiClick(MapPoi mapPoi) {
-                mDrawer.onMapClicked(mapPoi.getPosition());
-                return false;
-            }
         });
 
-        mBaiduMap.setOnMarkerDragListener(new BaiduMap.OnMarkerDragListener() {
+        mAMap.setOnMarkerDragListener(new AMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker marker) {
-                Utils.vibratePhoneShort(BaiduMapDrawerActivity.this);
+                Utils.vibratePhoneShort(AMapDrawerActivity.this);
                 mDrawer.onDragMarkerStart(marker);
             }
 
@@ -94,7 +81,7 @@ public class BaiduMapDrawerActivity extends AppCompatActivity {
             }
         });
 
-        mBaiduMap.setOnMapLongClickListener(new BaiduMap.OnMapLongClickListener() {
+        mAMap.setOnMapLongClickListener(new AMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 mDrawer.onMapLongClicked(latLng);
@@ -139,7 +126,7 @@ public class BaiduMapDrawerActivity extends AppCompatActivity {
         mExportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(BaiduMapDrawerActivity.this, mDrawer.getJsonString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AMapDrawerActivity.this, mDrawer.getJsonString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -147,19 +134,25 @@ public class BaiduMapDrawerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
         mMapView.onDestroy();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
+        //在activity执行onResume时执行mMapView.onResume ()，实现地图生命周期管理
         mMapView.onResume();
     }
-
     @Override
     protected void onPause() {
         super.onPause();
+        //在activity执行onPause时执行mMapView.onPause ()，实现地图生命周期管理
         mMapView.onPause();
     }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，实现地图生命周期管理
+        mMapView.onSaveInstanceState(outState);
+    }
 }
-

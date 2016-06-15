@@ -10,9 +10,11 @@ import guru.voidmain.mappolydrawerlib.models.LatLngWrapper;
 public class MovePoint implements Action {
     public int index;
     public LatLngWrapper point;
+    public boolean shouldAddToUndo;
 
-    public MovePoint(int index, LatLngWrapper point) {
+    public MovePoint(int index, LatLngWrapper point, boolean shouldAddToUndo) {
         this.index = index;
         this.point = point;
+        this.shouldAddToUndo = shouldAddToUndo;
     }
 }

@@ -15,6 +15,7 @@ import guru.voidmain.mappolydrawerlib.actions.SelectPolygon;
 import guru.voidmain.mappolydrawerlib.actions.Undo;
 import guru.voidmain.mappolydrawerlib.models.MapPolygon;
 import guru.voidmain.mappolydrawerlib.stores.ApplicationState;
+import guru.voidmain.mappolydrawerlib.stores.UndoRedoStore;
 
 /**
  * Main Reducer
@@ -65,9 +66,13 @@ public class DrawerReducer implements Reducer<ApplicationState> {
                 return ApplicationState.stateByDeletePolygon(state, ((DeletePolygon) action).polygonIndex);
             }
         } else if (action instanceof Undo) {
-
+            if (UndoRedoStore.getInstance().canUndo()) {
+                return UndoRedoStore.getInstance().performUndo(state);
+            }
         } else if (action instanceof Redo) {
-
+            if (UndoRedoStore.getInstance().canRedo()) {
+                return UndoRedoStore.getInstance().performRedo(state);
+            }
         }
 
         return state;

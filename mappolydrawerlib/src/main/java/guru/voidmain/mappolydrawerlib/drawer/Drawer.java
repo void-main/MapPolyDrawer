@@ -1,8 +1,13 @@
 package guru.voidmain.mappolydrawerlib.drawer;
 
+import android.graphics.Point;
 import android.util.Log;
 
+import com.brianegan.bansa.Action;
 import com.brianegan.bansa.BaseStore;
+import com.brianegan.bansa.Middleware;
+import com.brianegan.bansa.NextDispatcher;
+import com.brianegan.bansa.Store;
 import com.brianegan.bansa.Subscriber;
 
 import java.util.List;
@@ -16,6 +21,7 @@ import guru.voidmain.mappolydrawerlib.actions.Redo;
 import guru.voidmain.mappolydrawerlib.actions.SelectPolygon;
 import guru.voidmain.mappolydrawerlib.actions.Undo;
 import guru.voidmain.mappolydrawerlib.drawableadapter.IDrawableMap;
+import guru.voidmain.mappolydrawerlib.middlewares.UndoRedoMiddleware;
 import guru.voidmain.mappolydrawerlib.models.LatLngWrapper;
 import guru.voidmain.mappolydrawerlib.models.MapPolygon;
 import guru.voidmain.mappolydrawerlib.reducers.DrawerReducer;
@@ -56,15 +62,13 @@ public class Drawer<PointClass, MarkerClass, PolylineClass, PolygonClass> {
         mDrawableMap = drawableMap;
         mRenderer = new MapRenderer(mDrawableMap);
 
-        mStore = new BaseStore<>(new ApplicationState(), new DrawerReducer());
+        mStore = new BaseStore<>(new ApplicationState(), new DrawerReducer(), new UndoRedoMiddleware());
         mStore.subscribe(new Subscriber<ApplicationState>() {
             @Override
             public void onStateChange(ApplicationState state) {
                 if (mStatedChangedListener != null) {
                     mStatedChangedListener.onStateChanged(state);
                 }
-
-                Log.d(TAG, state.toString());
 
                 VirtualOverlayContainer newContainer = VirtualOverlayBuilder.build(state);
                 VirtualOverlayDiffContainer diff = VirtualOverlayDiffComputer.computerDiffs(newContainer, mLastVirtualOverlay);
@@ -99,18 +103,24 @@ public class Drawer<PointClass, MarkerClass, PolylineClass, PolygonClass> {
         }
     }
 
-    public void onDragMarkerEnd(MarkerClass marker) {
-        // TODO onDragMarkerEnd
+    public void onDragMarkerEnd(MarkerClass marker, PointClass toPosition) {
+        emitMoveAction(marker, toPosition, true);
     }
 
     public void onDragMarkerMove(MarkerClass marker, PointClass toPosition) {
+        emitMoveAction(marker, toPosition, false);
+    }
+
+    protected void emitMoveAction(MarkerClass marker, PointClass toPosition, boolean shouldAddToUndo) {
         VirtualOverlayMarker overlay = mRenderer.getVirtualOverlayForMaker(marker);
         if (overlay != null) {
             MapPolygon currentPolygon = mStore.getState().getPolygons().get(
                     mStore.getState().getCurrentPolyIndex());
             int userPointIndex = currentPolygon.allPoints().indexOf(overlay.getPoint()) / 2;
             mStore.dispatch(new MovePoint(userPointIndex,
-                    mDrawableMap.convertPointClassToLatLngWrapper(toPosition)));
+                    mDrawableMap.convertPointClassToLatLngWrapper(toPosition),
+                    shouldAddToUndo
+            ));
         }
     }
 

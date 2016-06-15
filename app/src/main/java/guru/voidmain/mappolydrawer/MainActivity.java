@@ -28,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
         bmapItem.put("exampleClass", BaiduMapDrawerActivity.class);
         items.add(bmapItem);
 
+        Map<String, Object> amapItem = new HashMap<>();
+        amapItem.put("displayName", "高德地图");
+        amapItem.put("exampleClass", AMapDrawerActivity.class);
+        items.add(amapItem);
+
         mMapsList = (ListView)findViewById(R.id.listView);
         mMapsList.setAdapter(new SimpleAdapter(this,
                 items,
