@@ -89,4 +89,19 @@ public class ApplicationState {
     public void setCurrentPolyIndex(int currentPolyIndex) {
         this.currentPolyIndex = currentPolyIndex;
     }
+
+    // TODO Helper methods for UI
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Polygons: \n");
+        for (MapPolygon polygon :
+                polygons) {
+            sb.append(polygon.toString() + "\n");
+        }
+
+        sb.append("Current Index: " + currentPolyIndex);
+        return sb.toString();
+    }
 }

@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
                 new String[] { "displayName" },
                 new int[] { android.R.id.text1 }));
 
+
         mMapsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

@@ -29,4 +29,5 @@ dependencies {
     debugCompile 'com.github.brianegan.bansa:bansaDevToolsUi:1.0.0-beta'
 
     compile 'com.esotericsoftware:kryo:3.0.3'
+    compile 'com.google.code.gson:gson:2.6.2'
 }

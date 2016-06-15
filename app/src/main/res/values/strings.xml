@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MapPolyDrawer</string>
+    <string name="button_title_close">闭合</string>
+    <string name="button_title_clear">清空</string>
+    <string name="button_title_confirm">确认</string>
+    <string name="button_title_undo">UNDO</string>
+    <string name="button_title_redo">REDO</string>
+    <string name="button_title_export">导出JSON</string>
 </resources>

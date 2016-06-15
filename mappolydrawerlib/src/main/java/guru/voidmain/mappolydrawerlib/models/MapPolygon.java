@@ -1,12 +1,14 @@
 package guru.voidmain.mappolydrawerlib.models;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-import guru.voidmain.mappolydrawerlib.exceptions.CloseNotClosablePolygonException;
 import guru.voidmain.mappolydrawerlib.utils.GeoUtils;
 
 /**
@@ -14,6 +16,11 @@ import guru.voidmain.mappolydrawerlib.utils.GeoUtils;
  * Created by voidmain on 16/6/12.
  */
 public class MapPolygon implements Cloneable {
+    protected String mUid = null;
+
+    public String getUid() {
+        return mUid;
+    }
     /**
      * User points, the `concrete` points.
      * User points are created when user touches on the map, or drags a `control point`
@@ -33,12 +40,14 @@ public class MapPolygon implements Cloneable {
     private boolean mClosePolygon = false;
 
     public MapPolygon() {
+        mUid = UUID.randomUUID().toString();
         mClosePolygon = false;
         mUserPoints = new ArrayList<>();
         mControlPoints = new ArrayList<>();
     }
 
     public MapPolygon(List<LatLngWrapper> userPoints) {
+        mUid = UUID.randomUUID().toString();
         mClosePolygon = true;
         mUserPoints = userPoints;
         mControlPoints = new ArrayList<>();
@@ -106,6 +115,16 @@ public class MapPolygon implements Cloneable {
         cloned.mClosePolygon = mClosePolygon;
 
         return cloned;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof MapPolygon) {
+            MapPolygon other = (MapPolygon) o;
+            return other.mUid.equals(mUid);
+        }
+
+        return false;
     }
 
     /**
@@ -203,8 +222,6 @@ public class MapPolygon implements Cloneable {
     public void clearPoints() {
         setClosePolygon(false);
         mUserPoints.clear();
-
-        // TODO remove
         mControlPoints.clear();
     }
 

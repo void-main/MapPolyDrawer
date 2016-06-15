@@ -12,7 +12,7 @@ import guru.voidmain.mappolydrawerlib.actions.DeletePolygon;
 import guru.voidmain.mappolydrawerlib.actions.MovePoint;
 import guru.voidmain.mappolydrawerlib.actions.SelectPolygon;
 import guru.voidmain.mappolydrawerlib.models.LatLngWrapper;
-import guru.voidmain.mappolydrawerlib.reducers.MainReducer;
+import guru.voidmain.mappolydrawerlib.reducers.DrawerReducer;
 import guru.voidmain.mappolydrawerlib.stores.ApplicationState;
 
 import static org.junit.Assert.*;
@@ -24,7 +24,7 @@ public class ActionReducerUnitTest {
 
     @Test
     public void actionAndReducer_isCorrect() throws Exception {
-        BaseStore<ApplicationState> store = new BaseStore<>(new ApplicationState(), new MainReducer());
+        BaseStore<ApplicationState> store = new BaseStore<>(new ApplicationState(), new DrawerReducer());
         store.dispatch(new AddPoint(new LatLngWrapper(1, 1)));
         ApplicationState state = store.getState();
         assertEquals("should select first polygon", 0, state.getCurrentPolyIndex());

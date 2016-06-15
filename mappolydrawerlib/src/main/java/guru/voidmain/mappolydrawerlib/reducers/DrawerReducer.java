@@ -3,10 +3,6 @@ package guru.voidmain.mappolydrawerlib.reducers;
 import com.brianegan.bansa.Action;
 import com.brianegan.bansa.Reducer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import guru.voidmain.mappolydrawerlib.actions.AddPoint;
 import guru.voidmain.mappolydrawerlib.actions.ClearPoints;
 import guru.voidmain.mappolydrawerlib.actions.ClosePolygon;
@@ -17,7 +13,6 @@ import guru.voidmain.mappolydrawerlib.actions.MovePoint;
 import guru.voidmain.mappolydrawerlib.actions.Redo;
 import guru.voidmain.mappolydrawerlib.actions.SelectPolygon;
 import guru.voidmain.mappolydrawerlib.actions.Undo;
-import guru.voidmain.mappolydrawerlib.exceptions.CloseNotClosablePolygonException;
 import guru.voidmain.mappolydrawerlib.models.MapPolygon;
 import guru.voidmain.mappolydrawerlib.stores.ApplicationState;
 
@@ -25,7 +20,7 @@ import guru.voidmain.mappolydrawerlib.stores.ApplicationState;
  * Main Reducer
  * Created by voidmain on 16/6/12.
  */
-public class MainReducer implements Reducer<ApplicationState> {
+public class DrawerReducer implements Reducer<ApplicationState> {
 
     @Override
     public ApplicationState reduce(ApplicationState state, Action action) {

@@ -24,4 +24,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile project(path: ':mappolydrawerlib')
+    compile files('libs/libBaiduMapSDK_base_v3_7_3.jar')
 }

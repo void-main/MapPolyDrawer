@@ -1,5 +1,9 @@
 package guru.voidmain.mappolydrawerlib.models;
 
+import java.util.UUID;
+
+import guru.voidmain.mappolydrawerlib.common.Constants;
+
 /**
  * Wrapper class that holds latitude and longitude
  * Used for multi-map compatibility
@@ -8,25 +12,25 @@ package guru.voidmain.mappolydrawerlib.models;
 public class LatLngWrapper {
     public double latitude;
     public double longitude;
-
-    private static final double EPSILON = 1e-5;
+    public String uid;
 
     public LatLngWrapper() {
         this.latitude = 0;
         this.longitude = 0;
+        this.uid = UUID.randomUUID().toString();
     }
 
     public LatLngWrapper(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
+        this.uid = UUID.randomUUID().toString();
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof LatLngWrapper) {
             LatLngWrapper item = (LatLngWrapper) o;
-            return Math.abs(item.latitude - latitude) < EPSILON &&
-                    Math.abs(item.longitude - longitude) < EPSILON;
+            return uid.equals(item.uid);
         }
         return false;
     }
